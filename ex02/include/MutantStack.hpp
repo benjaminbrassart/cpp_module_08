@@ -6,17 +6,21 @@
 /*   By: bbrassar <bbrassar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/07 10:36:31 by bbrassar          #+#    #+#             */
-/*   Updated: 2022/05/07 11:06:42 by bbrassar         ###   ########.fr       */
+/*   Updated: 2022/05/09 01:01:41 by bbrassar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MUTANTSTACK_HPP
 # define MUTANTSTACK_HPP
 
+# include <ostream>
 # include <stack>
 
-template< class T >
-class MutantStack : public std::stack< T >
+/**
+ * @see https://www.cplusplus.com/reference/stack/stack/
+ */
+template< class T, class Container = typename std::stack< T >::container_type >
+class MutantStack : public std::stack< T, Container >
 {
 	public:
 	typedef typename std::stack< T >::container_type::iterator					iterator;
@@ -39,7 +43,7 @@ class MutantStack : public std::stack< T >
 
 	MutantStack	&operator=(MutantStack const &x)
 	{
-		std::stack<T>::operator=(x);
+		this->std::stack<T>::operator=(x);
 		return (*this);
 	}
 
@@ -83,7 +87,26 @@ class MutantStack : public std::stack< T >
 	{
 		return (this->c.rend());
 	}
-
 }; // class MutantStack
+
+template< class T >
+std::ostream &operator<<(std::ostream &os, MutantStack< T > const &stack)
+{
+	os << "MutantStack ";
+	if (stack.empty())
+		return (os << "(empty)");
+	os << "(" << stack.size() << ") {";
+	for (
+		typename MutantStack< T >::const_iterator it = stack.begin();
+		it != stack.end();
+		++it
+	)
+	{
+		if (it != stack.begin())
+			os << ", ";
+		os << *it;
+	}
+	return (os << "}");
+}
 
 #endif
